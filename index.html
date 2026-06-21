@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniScan Pro | Student Barcode Generator</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <img src="logo.png" alt="UniScan Pro Logo" class="logo-image">
+      <div class="logo-text">
+        <h2>UniScan Pro</h2>
+        <p>Student Barcode System</p>
+      </div>
+    </div>
+    <div class="nav-item active" data-tab="manual">Manual Entry</div>
+    <div class="nav-item" data-tab="bulk">Bulk Upload</div>
+    <div class="nav-item" data-tab="gallery">Gallery</div>
+    <div class="theme-btn" id="themeBtn">🌓 Toggle Theme</div>
+  </div>
+
+  <div class="main-content">
+    <div id="manual-tab">
+      <div class="manual-layout">
+        <div class="card">
+          <div class="card-title">Create Barcode</div>
+          <div class="card-sub">Enter any text to encode into a barcode</div>
+          <div class="form-group">
+            <label>Text to Encode</label>
+            <input type="text" id="manualTextInput" placeholder="e.g., Ahmad Aizaz | 540621 | Semester 6">
+          </div>
+          <div class="form-group">
+            <label>Barcode Format</label>
+            <select id="manualFormat">
+              <option value="CODE128">CODE128</option>
+              <option value="CODE39">CODE39</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-secondary" id="clearManualBtn">Clear</button>
+            <button class="btn btn-primary" id="generateBtn">Generate Barcode</button>
+          </div>
+        </div>
+        <div class="card preview-card" id="previewContainer">
+          <div id="previewEmpty">
+            <div style="font-size: 48px; margin-bottom: 16px;"></div>
+            <p>Barcode preview will appear here</p>
+          </div>
+          <div id="previewContent" style="display: none; width: 100%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="bulk-tab" style="display: none;">
+      <div class="card">
+        <div class="card-title">Upload Excel File</div>
+        <div class="card-sub">Supports any column order - auto-detects fields</div>
+        <div class="drop-zone" id="dropZone">
+          <div style="font-size: 48px; margin-bottom: 12px;">📁</div>
+          <p>Drag & drop or click to upload</p>
+          <small>.xlsx, .xls files only</small>
+          <input type="file" id="fileInput" accept=".xlsx,.xls" style="display: none;">
+        </div>
+      </div>
+
+      <div id="previewCard" style="display: none;">
+        <div class="card">
+          <div class="card-title">Data Preview</div>
+          <div id="previewTable"></div>
+          <div class="form-group" style="margin-top: 16px;">
+            <label>Barcode Format</label>
+            <select id="bulkFormatSelect">
+              <option value="CODE128">CODE128</option>
+              <option value="CODE39">CODE39</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="generateBulkBtn">Generate Barcodes</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="progressDiv" style="display: none;">
+        <div class="card">
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="progressFill"></div>
+          </div>
+          <p id="progressMsg" style="margin-top: 12px; text-align: center;">Processing...</p>
+        </div>
+      </div>
+
+      <div id="resultsDiv" style="display: none;">
+        <div class="toolbar">
+          <div class="search-box">
+             <input type="text" id="searchInput" placeholder="Search...">
+          </div>
+          <div>
+            <button class="btn btn-secondary" id="selectAllBtn">Select All</button>
+            <button class="btn btn-secondary" id="deselectAllBtn">Deselect</button>
+            <button class="btn btn-success" id="downloadSelectedBtn" style="display: none;">Download Selected</button>
+            <button class="btn btn-primary" id="downloadAllZipBtn">Download All ZIP</button>
+          </div>
+        </div>
+        <div id="barcodeGrid"></div>
+      </div>
+    </div>
+
+    <div id="gallery-tab" style="display: none;">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div class="card-title">Saved Barcodes</div>
+            <div class="card-sub">Your collection</div>
+          </div>
+          <button class="btn btn-danger" id="clearGalleryBtn">Clear All</button>
+        </div>
+      </div>
+      <div class="search-box" style="margin-bottom: 20px;">
+         <input type="text" id="gallerySearchInput" placeholder="Search gallery..." style="width: 100%;">
+      </div>
+      <div id="galleryGrid"></div>
+      <div id="galleryEmpty" style="display: none; text-align: center; padding: 60px;">
+        <div style="font-size: 48px;"></div>
+        <p>No saved barcodes yet</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>© 2026 UniScan Pro | Directorate of Students Advisory & Counselling Services  | Ahmad Aizaz</span>
+      <div>
+        <a href="https://www.linkedin.com/in/ahmadaizaz" target="_blank">LinkedIn</a> | 
+        <a href="https://github.com/ahmadaizazdev" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div id="welcomeModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" id="closeModalBtn">✕</button>
+<img src="logo.png" alt="UniScan Pro Logo" style="width: 80px; height: 80px; margin: 16px auto; display: block; border-radius: 16px;">
+      <h2>Welcome to UniScan Pro</h2>
+      <p style="margin: 16px 0; color: var(--text-light);">Professional Student Barcode Management</p>
+<p style="margin: -8px 0 16px 0; color: var(--primary); font-size: 13px; font-weight: 500;">A project by Ahmad Aizaz</p>
+      <div style="text-align: left; margin: 20px 0;">
+        <p>✓ Manual barcode generation</p>
+        <p>✓ Smart Excel upload (any column order)</p>
+        <p>✓ Bulk barcode generation with ZIP</p>
+        <p>✓ Selective download & gallery</p>
+
+      </div>
+      <button class="btn btn-primary" id="startBtn" style="width: 100%;">Get Started →</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
